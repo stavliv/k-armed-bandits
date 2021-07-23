@@ -1,6 +1,6 @@
 # k-armed-bandits
 
-a modified version of the k-armed testbed in which all the q*(a) start out equal and then take
+A modified version of the k-armed testbed in which all the q*(a) start out equal and then take
 independent random walks (by adding a normally distributed increment with mean
 zero and standard deviation 0.01 to all the q*(a) on each step). 
 Try different action-value methods by modifying the dictionary <<methods>>, 
