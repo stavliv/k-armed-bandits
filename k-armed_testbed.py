@@ -4,9 +4,9 @@ from time import perf_counter
 from abc import ABCMeta, abstractmethod
 from itertools import product
 
-RUNS = 1
-STEPS =1000        
-K = 10
+RUNS = 100 #the data are averages over RUNS number of runs with different bandit problems 
+STEPS = 1000 #a run lasts STEPS number of steps. At each step we choose a bandit      
+K = 10  #number of bandits
 
 
 def random_max_index(array):
@@ -24,12 +24,12 @@ class ArmedBandits():
     Parameters
     ----------
     initial_q : array_like (length=k)
-        the initial q values for each of the k armed bandits
+        the initial q value for each of the k armed bandits
    
     Attributes
     ----------
     initial_q : list
-        the initial q values for each of the k armed bandits
+        the initial q value for each of the k armed bandits
     q : list
         the q values for each of the k armed bandits 
     '''
@@ -586,6 +586,8 @@ class ParameterStudy():
 
 if __name__ == '__main__':
 
+    bandits = ArmedBandits([0 for i in range(K)])
+
     parametric_methods = [
         Parametric_eGreedy("ε-greedy", [0.1, 0.3, 0.5, 0.8], [0.1, 0.4], [0]),
         #ParametricUCB("UCB", [1, 2, 3, 4], [0.1, 0.5], [0]),
@@ -599,11 +601,7 @@ if __name__ == '__main__':
         UCB(c=2, name="UCB, c=1, a=0.1"),
         GradientBandit(name="gradient bandit, a=0.1")
     ]
-
-    bandits = ArmedBandits([0 for i in range(K)])
                 
     study = ParameterStudy(3, parametric_methods, bandits)
     study.study()
     study.plot()
-
-   
