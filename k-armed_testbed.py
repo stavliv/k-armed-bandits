@@ -273,14 +273,14 @@ class AverageStudy():
     ----------
     methods : array_like
         contains Method objects (eGreedy, UCB, GradientBandit), the methods we will study
-    bandits: ArmedBandits
+    bandits : ArmedBandits
         the ArmedBandits object we study our methods on
 
     Attributes
     ----------
     methods : array_like
         contains Method objects (eGreedy, UCB, GradientBandit), the methods we will study
-    bandits: ArmedBandits
+    bandits : ArmedBandits
         the ArmedBandits object we study our methods on  
     '''
     def __init__(self, methods, bandits):
@@ -288,6 +288,9 @@ class AverageStudy():
         self.bandits = bandits
 
     def study(self):
+        '''
+        Does the study. Computes the average reward, the percentage of optimal action chosen and the estimation of the value of the action chosen at each step.
+        '''
         for run in range(RUNS):
             print("current run:" + str(run))
             #t1 = perf_counter() 
@@ -309,6 +312,11 @@ class AverageStudy():
             #print(t2 - t1)
 
     def plot(self):
+        '''
+        Plots the results of the study.\n
+        1st plot : x axis : the steps, y axis : average reward at aech step\n
+        2nd plot : x axis : the steps, y axis : percentage of optimal action chosen at each step
+        '''
         x = np.arange(1, STEPS + 1)
 
         fig, (ax1, ax2) = plt.subplots(2)
@@ -338,7 +346,7 @@ class ParametricMethod(metaclass=ABCMeta):
     methods : array_like (3D)
         contains the Method objects (eGreedy, UCB, GradientBandit) with the desired parameter values.
         Each object has a particular setting of the parameters we treat as random variables (3 parameters hence 3D)
-    name: string
+    name : string
         the name of the parametric method
 
     Attributes
@@ -346,7 +354,7 @@ class ParametricMethod(metaclass=ABCMeta):
     methods : array_like
         contains the Method objects (eGreedy, UCB, GradientBandit) with the desired parameter values.
         Each object has a particular setting of the parameters we treat as random variables
-    name: string
+    name : string
         the name of the parametric method
     '''
     def __init__(self, name):
@@ -372,7 +380,7 @@ class Parametric_eGreedy(ParametricMethod):
 
     Parameters
     ----------
-    name: string
+    name : string
         the name of the parametric method
     epsilon_values : array_like
         contains the values we want the parameter epsilon to take for the parameter study.
@@ -413,7 +421,7 @@ class ParametricUCB(ParametricMethod):
 
     Parameters
     ----------
-    name: string
+    name : string
         the name of the parametric method
     c_values : array_like
         contains the values we want the parameter c to take for the parameter study.
@@ -454,7 +462,7 @@ class ParametricGradientBandit(ParametricMethod):
 
     Parameters
     ----------
-    name: string
+    name : string
         the name of the parametric method
     alpha_values : array_like
         contains the values we want the parameter stepsize(alpha) to take for the parameter study. 
@@ -485,24 +493,24 @@ class ParameterStudy():
 
     Parameters
     ----------
-    dim: int
-        the dimension of the graph. For dim = 2, we get a 2D graph and we must treat one parameter as random variable per method
+    dimensions : int (2 or 3)
+        the dimension of the graph. For dim = 2, we get a 2D graph and we must treat one parameter as variable per method
         (for each method enter multiple values only for one parameter). For dim = 3, we get a 3D graph and we must treat exactly 2 parameters
-        as random variables per method (for each method enter multiple values for exactly two parameters)
+        as variables per method (for each method enter multiple values for exactly two parameters)
     parametric_methods : array_like
         contains parametricMethod objects (Parametric_eGreedy, ParametricUCB, ParametricGradientBandit), the methods we will study
-    bandits: ArmedBandits
+    bandits : ArmedBandits
         the ArmedBandits object we study our methods on
 
     Attributes
     ----------
-    dim: int
-        the dimension of the graph. For dim = 2, we get a 2D graph and we must treat one parameter as random variable per method
+    dim : int (2 or 3)
+        the dimension of the graph. For dim = 2, we get a 2D graph and we must treat one parameter as variable per method
         (for each method enter multiple values only for one parameter). For dim = 3, we get a 3D graph and we must treat exactly 2 parameters
-        as random variables per method (for each method enter multiple values for exactly two parameters)
+        as variables per method (for each method enter multiple values for exactly two parameters)
     methods : array_like
         contains Method objects (eGreedy, UCB, GradientBandit), the methods we will study
-    bandits: ArmedBandits
+    bandits : ArmedBandits
         the ArmedBandits object we study our methods on  
     '''
     def __init__(self, dimensions, parametric_methods, bandits):
@@ -511,6 +519,9 @@ class ParameterStudy():
         self.bandits = bandits
 
     def study(self):
+        '''
+        Does the parameter study. Performs an average performance study for every set of parameters for all parametric methods.
+        '''
         def methods_flat():
             all_methods = [self.parametric_methods[i].methods for i in range(len(self.parametric_methods))]
             methods_flat = []
@@ -525,7 +536,12 @@ class ParameterStudy():
         avg_study = AverageStudy(all_methods, self.bandits)
         avg_study.study()
 
-    def plot(self):       
+    def plot(self):   
+        '''
+        Plots the results of the study.
+        When dim == 2 : makes a 2d plot, x axis : the set of values af the parameter-variable, y axis : average reward on STEPSth step.
+        When dim == 3 : makes a 3d plot, x axis : the set of values af the 1st parameter-variable, y axis : the set of values af the 2nd parameter-variable, z axis : average reward on STEPSth step.
+        '''    
         avg_reward_STEPS = [[] for i in range(len(self.parametric_methods))]
         for i in range(len(self.parametric_methods)):
             for j in range(np.shape(self.parametric_methods[i].methods)[0]):
@@ -603,5 +619,8 @@ if __name__ == '__main__':
     ]
                 
     study = ParameterStudy(3, parametric_methods, bandits)
+    #study = AverageStudy(methods, bandits)
     study.study()
     study.plot()
+
+   
