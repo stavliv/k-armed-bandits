@@ -6,7 +6,7 @@ zero and standard deviation 0.01 to all the q*(a) on each step).
 
 Create the Armed Bandits with the desirable initial q*(a) values using the ArmedBandits class.
 
-Try different action-value methods by modifying the list "methods" for an average performance study of the methods or by modifying the list "parametric_methods" for a parameter study of the methods.
+Try different action-value methods by modifying the list "methods" and using it in an AverageStudy instance for an average performance study of the methods or by modifying the list "parametric_methods" and using it in an AverageStudy instance for a parameter study of the methods.
 
 
 
